@@ -68,12 +68,11 @@ def playGame():
     ENTER = False
     index = (CURRENT - 87) // 30
     game = GAMES[index]
+    pygame.display.quit()
     # play games from the list
     if game == "2048":
         Main2048.start()
-    else:
-        pygame.display.quit()
-    if game == "Tetris":
+    elif game == "Tetris":
         Tetris.start()
     elif game == "Hangman":
         MainHangman.start()
@@ -85,7 +84,6 @@ def playGame():
         MainSnake.start()
     # print the menu again
     pygame.display.init()
-    # pygame.display.update()
     startMenu()
 
 
