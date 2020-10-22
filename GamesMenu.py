@@ -7,9 +7,10 @@ import MainHangman
 import MainSnake
 import Tetris
 import Main2048
-import MainTicTacToe
 
 # Global vars
+import TicTacToe
+
 UP = False
 DOWN = False
 ENTER = False
@@ -79,7 +80,7 @@ def playGame():
     elif game == "Battleship":
         MainBattleship.start()
     elif game == "Tic-Tac-Toe":
-        MainTicTacToe.start()
+        TicTacToe.start()
     elif game == "Snake":
         MainSnake.start()
     # print the menu again
