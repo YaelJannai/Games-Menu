@@ -112,6 +112,7 @@ def game(surface, mode, player1, player2):
 
 def playersGame(surface, player1, player2, computer):
     win = False
+    ret = True
     # for each turn, up to 9
     for i in range(9):
         # 'even' player turn
