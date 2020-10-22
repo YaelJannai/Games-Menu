@@ -64,7 +64,7 @@ def startGame(surface):
     while run:
         for event in pygame.event.get():
             # the user want to quit
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
                 run = False
 
             # get mouse positions
@@ -93,7 +93,10 @@ def startGame(surface):
                 printBoard(surface)
                 pygame.display.flip()
                 # game logic
-                game(surface, game_mode, player1, player2)
+                run = game(surface, game_mode, player1, player2)
+
+    # clean screen before exit
+    reset(surface)
     # pygame.quit()
     # sys.exit()
 
@@ -101,10 +104,10 @@ def startGame(surface):
 def game(surface, mode, player1, player2):
     # player vs. computer
     if mode == 1:
-        playersGame(surface, player1, player2, True)
+        return playersGame(surface, player1, player2, True)
     # player1 vs player2
     elif mode == 2:
-        playersGame(surface, player1, player2, False)
+        return playersGame(surface, player1, player2, False)
 
 
 def playersGame(surface, player1, player2, computer):
@@ -121,7 +124,7 @@ def playersGame(surface, player1, player2, computer):
             win = checkBordForWin(player1)
             if win:
                 # print message on screen - end of game
-                printScreen(surface, "player1 has won!!!")
+                ret = printScreen(surface, "player1 has won!!!")
                 break
         else:
             # if user play with computer
@@ -136,14 +139,15 @@ def playersGame(surface, player1, player2, computer):
             if win:
                 if computer:
                     # print message on screen - end of game
-                    printScreen(surface, "You lose..")
+                    ret = printScreen(surface, "You lose..")
                 else:
                     # print message on screen - end of game
-                    printScreen(surface, "player1 has won!!!")
+                    ret = printScreen(surface, "player1 has won!!!")
                 break
     if not win:
         # print message on screen - end of game
-        printScreen(surface, "Its a tie!!")
+        ret = printScreen(surface, "Its a tie!!")
+    return ret
 
 
 def turn(player):
@@ -291,7 +295,6 @@ def printBoard(surface):
 
 def printScreen(surface, toPrint):
     color = (100, 255, 120)
-    global board
     endfont = pygame.font.SysFont("Goudy Old Style", 60, bold=True)
     text_win = endfont.render(toPrint, 1, color)
 
@@ -309,15 +312,25 @@ def printScreen(surface, toPrint):
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_n):
                 # return False
                 run = False
+                return run
             if event.type == pygame.KEYDOWN and event.key == pygame.K_y:
                 # 'y' is pressed to start a new game - play again
-                board = ['', '', '',
-                         '', '', '',
-                         '', '', '', ]
-                grid.draw(surface)
+                # board = ['', '', '',
+                #          '', '', '',
+                #          '', '', '', ]
+                # grid.draw(surface)
+                reset(surface)
                 startGame(surface)
     pygame.quit()
     sys.exit()
+
+
+def reset(surface):
+    global board
+    board = ['', '', '',
+             '', '', '',
+             '', '', '', ]
+    grid.draw(surface)
 
 
 def chooseMode(surface):
