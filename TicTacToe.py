@@ -1,5 +1,4 @@
 import sys
-
 import pygame
 import random
 from time import sleep
@@ -97,8 +96,6 @@ def startGame(surface):
 
     # clean screen before exit
     reset(surface)
-    # pygame.quit()
-    # sys.exit()
 
 
 def game(surface, mode, player1, player2):
@@ -118,7 +115,9 @@ def playersGame(surface, player1, player2, computer):
         # 'even' player turn
         if i % 2 == 0:
             # choose where to put symbol
-            turn(player1)
+            ret_turn = turn(player1)
+            if not ret_turn:
+                return False
             # print game board after choice
             printBoard(surface)
             # check if there are 3 from same symbol in a row
@@ -133,7 +132,9 @@ def playersGame(surface, player1, player2, computer):
                 computerTurn(player1, player2)
             # if user play with another user
             else:
-                turn(player2)
+                ret_turn = turn(player2)
+                if not ret_turn:
+                    return False
             printBoard(surface)
             # check if there are 3 from same symbol in a row
             win = checkBordForWin(player2)
@@ -153,8 +154,13 @@ def playersGame(surface, player1, player2, computer):
 
 def turn(player):
     position = -1
+    ret = True
     while position == -1:
         for event in pygame.event.get():
+            # the user want to quit
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
+                return False
+
             # get mouse positions
             mouse_x, mouse_y = pygame.mouse.get_pos()
 
@@ -189,6 +195,7 @@ def turn(player):
                         position = 8
     # put symbol in board
     board[position] = player
+    return True
 
 
 def computerTurn(player1, player2):
@@ -283,13 +290,16 @@ def checkBordForWin(symbol, tmp_board=None):
 
 def printBoard(surface):
     grid.draw(surface)
+    # run over all board items
     for item in enumerate(board):
+        # if it's 1 print X
         if item[1] == 1:
-            image_show = pygame.image.load('img/X.jpeg')
+            image_show = pygame.image.load('img/X_.jpeg')
             surface.blit(image_show, board_tuples[item[0]])
             pygame.display.update()
+        # if it's 0 print O
         elif item[1] == 0:
-            image_show = pygame.image.load('img/O.jpeg')
+            image_show = pygame.image.load('img/O_.jpeg')
             surface.blit(image_show, board_tuples[item[0]])
             pygame.display.update()
 
@@ -305,25 +315,17 @@ def printScreen(surface, toPrint):
     surface.blit(endfont.render("Play again? (y/ n)", 1, color), (120, 355))
     pygame.display.update()
 
-    run = True
     # wait for user input
-    while run:
+    while True:
         for event in pygame.event.get():
             # quit
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_n):
-                # return False
-                run = False
-                return run
+                return False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_y:
-                # 'y' is pressed to start a new game - play again
-                # board = ['', '', '',
-                #          '', '', '',
-                #          '', '', '', ]
-                # grid.draw(surface)
                 reset(surface)
                 startGame(surface)
-    pygame.quit()
-    sys.exit()
+    # pygame.quit()
+    # sys.exit()
 
 
 def reset(surface):
